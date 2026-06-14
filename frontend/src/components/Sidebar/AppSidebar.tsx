@@ -1,4 +1,4 @@
-import { Briefcase, Home, Users } from "lucide-react"
+import { Briefcase, Home, Users, User, FileText, Send } from "lucide-react"
 
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
@@ -10,11 +10,14 @@ import {
 } from "@/components/ui/sidebar"
 import useAuth from "@/hooks/useAuth"
 import { type Item, Main } from "./Main"
-import { User } from "./User"
+import { User as UserSidebar } from "./User"
 
 const baseItems: Item[] = [
   { icon: Home, title: "Dashboard", path: "/" },
-  { icon: Briefcase, title: "Items", path: "/items" },
+  { icon: User, title: "Profile", path: "/profile" },
+  { icon: FileText, title: "Resumes", path: "/resume" },
+  { icon: Briefcase, title: "Jobs", path: "/jobs" },
+  { icon: Send, title: "Applications", path: "/applications" },
 ]
 
 export function AppSidebar() {
@@ -34,7 +37,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarAppearance />
-        <User user={currentUser} />
+        <UserSidebar user={currentUser} />
       </SidebarFooter>
     </Sidebar>
   )

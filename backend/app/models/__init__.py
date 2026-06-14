@@ -5,6 +5,13 @@ from pydantic import EmailStr
 from sqlalchemy import DateTime
 from sqlmodel import Field, Relationship, SQLModel
 
+# Import new domain models
+from app.models.profile import Profile
+from app.models.resume import Resume
+from app.models.question_memory import QuestionMemory
+from app.models.job import Job
+from app.models.application import Application, ApplicationField, ApplicationEvent
+
 
 def get_datetime_utc() -> datetime:
     return datetime.now(timezone.utc)
@@ -54,6 +61,10 @@ class User(UserBase, table=True):
         sa_type=DateTime(timezone=True),  # type: ignore
     )
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    profile: Profile | None = Relationship(back_populates="user", cascade_delete=True)
+    resumes: list[Resume] = Relationship(back_populates="user", cascade_delete=True)
+    question_memories: list[QuestionMemory] = Relationship(back_populates="user", cascade_delete=True)
+    applications: list[Application] = Relationship(back_populates="user", cascade_delete=True)
 
 
 # Properties to return via API, id is always required

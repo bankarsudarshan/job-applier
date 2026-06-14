@@ -16,7 +16,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutResumeRouteImport } from './routes/_layout/resume'
+import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
+import { Route as LayoutJobsRouteImport } from './routes/_layout/jobs'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutApplicationsRouteImport } from './routes/_layout/applications'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 
 const SignupRoute = SignupRouteImport.update({
@@ -53,9 +57,29 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutResumeRoute = LayoutResumeRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutProfileRoute = LayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutJobsRoute = LayoutJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutItemsRoute = LayoutItemsRouteImport.update({
   id: '/items',
   path: '/items',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutApplicationsRoute = LayoutApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
@@ -65,14 +89,18 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof LayoutIndexRoute
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/applications': typeof LayoutApplicationsRoute
   '/items': typeof LayoutItemsRoute
+  '/jobs': typeof LayoutJobsRoute
+  '/profile': typeof LayoutProfileRoute
+  '/resume': typeof LayoutResumeRoute
   '/settings': typeof LayoutSettingsRoute
-  '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -80,7 +108,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/applications': typeof LayoutApplicationsRoute
   '/items': typeof LayoutItemsRoute
+  '/jobs': typeof LayoutJobsRoute
+  '/profile': typeof LayoutProfileRoute
+  '/resume': typeof LayoutResumeRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -92,21 +124,29 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/applications': typeof LayoutApplicationsRoute
   '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/jobs': typeof LayoutJobsRoute
+  '/_layout/profile': typeof LayoutProfileRoute
+  '/_layout/resume': typeof LayoutResumeRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/login'
     | '/recover-password'
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/applications'
     | '/items'
+    | '/jobs'
+    | '/profile'
+    | '/resume'
     | '/settings'
-    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -114,7 +154,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/applications'
     | '/items'
+    | '/jobs'
+    | '/profile'
+    | '/resume'
     | '/settings'
     | '/'
   id:
@@ -125,7 +169,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/applications'
     | '/_layout/items'
+    | '/_layout/jobs'
+    | '/_layout/profile'
+    | '/_layout/resume'
     | '/_layout/settings'
     | '/_layout/'
   fileRoutesById: FileRoutesById
@@ -171,7 +219,7 @@ declare module '@tanstack/react-router' {
     '/_layout': {
       id: '/_layout'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -189,11 +237,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/resume': {
+      id: '/_layout/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof LayoutResumeRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/profile': {
+      id: '/_layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof LayoutProfileRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/jobs': {
+      id: '/_layout/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof LayoutJobsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/items': {
       id: '/_layout/items'
       path: '/items'
       fullPath: '/items'
       preLoaderRoute: typeof LayoutItemsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/applications': {
+      id: '/_layout/applications'
+      path: '/applications'
+      fullPath: '/applications'
+      preLoaderRoute: typeof LayoutApplicationsRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/admin': {
@@ -208,14 +284,22 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutApplicationsRoute: typeof LayoutApplicationsRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutJobsRoute: typeof LayoutJobsRoute
+  LayoutProfileRoute: typeof LayoutProfileRoute
+  LayoutResumeRoute: typeof LayoutResumeRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
+  LayoutApplicationsRoute: LayoutApplicationsRoute,
   LayoutItemsRoute: LayoutItemsRoute,
+  LayoutJobsRoute: LayoutJobsRoute,
+  LayoutProfileRoute: LayoutProfileRoute,
+  LayoutResumeRoute: LayoutResumeRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }

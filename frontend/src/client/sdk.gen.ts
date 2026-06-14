@@ -3,7 +3,143 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { ApplicationsListApplicationsResponse, ApplicationsCreateApplicationData, ApplicationsCreateApplicationResponse, ApplicationsStartApplyingData, ApplicationsStartApplyingResponse, ApplicationsGetApplicationFieldsData, ApplicationsGetApplicationFieldsResponse, ApplicationsResolveApplicationFieldsData, ApplicationsResolveApplicationFieldsResponse, ApplicationsSubmitJobApplicationData, ApplicationsSubmitJobApplicationResponse, ApplicationsGetApplicationEventsData, ApplicationsGetApplicationEventsResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, JobsListJobsResponse, JobsDiscoverNewJobsResponse, JobsGetMatchedJobsResponse, JobsGetJobData, JobsGetJobResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfileGetMyProfileResponse, ProfileUpdateMyProfileData, ProfileUpdateMyProfileResponse, QuestionsListQuestionsResponse, QuestionsSaveQuestionAnswerData, QuestionsSaveQuestionAnswerResponse, QuestionsMatchQuestionData, QuestionsMatchQuestionResponse, ResumesUploadResumeData, ResumesUploadResumeResponse, ResumesListResumesResponse, ResumesGetResumeData, ResumesGetResumeResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class ApplicationsService {
+    /**
+     * List Applications
+     * @returns ApplicationPublic Successful Response
+     * @throws ApiError
+     */
+    public static listApplications(): CancelablePromise<ApplicationsListApplicationsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/applications/'
+        });
+    }
+    
+    /**
+     * Create Application
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns ApplicationPublic Successful Response
+     * @throws ApiError
+     */
+    public static createApplication(data: ApplicationsCreateApplicationData): CancelablePromise<ApplicationsCreateApplicationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/applications/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Start Applying
+     * @param data The data for the request.
+     * @param data.appId
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static startApplying(data: ApplicationsStartApplyingData): CancelablePromise<ApplicationsStartApplyingResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/applications/{app_id}/start',
+            path: {
+                app_id: data.appId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Application Fields
+     * @param data The data for the request.
+     * @param data.appId
+     * @returns ApplicationFieldPublic Successful Response
+     * @throws ApiError
+     */
+    public static getApplicationFields(data: ApplicationsGetApplicationFieldsData): CancelablePromise<ApplicationsGetApplicationFieldsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/applications/{app_id}/fields',
+            path: {
+                app_id: data.appId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Resolve Application Fields
+     * @param data The data for the request.
+     * @param data.appId
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static resolveApplicationFields(data: ApplicationsResolveApplicationFieldsData): CancelablePromise<ApplicationsResolveApplicationFieldsResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/applications/{app_id}/resolve',
+            path: {
+                app_id: data.appId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Submit Job Application
+     * @param data The data for the request.
+     * @param data.appId
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static submitJobApplication(data: ApplicationsSubmitJobApplicationData): CancelablePromise<ApplicationsSubmitJobApplicationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/applications/{app_id}/submit',
+            path: {
+                app_id: data.appId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Application Events
+     * @param data The data for the request.
+     * @param data.appId
+     * @returns ApplicationEventPublic Successful Response
+     * @throws ApiError
+     */
+    public static getApplicationEvents(data: ApplicationsGetApplicationEventsData): CancelablePromise<ApplicationsGetApplicationEventsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/applications/{app_id}/events',
+            path: {
+                app_id: data.appId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
 
 export class ItemsService {
     /**
@@ -108,6 +244,64 @@ export class ItemsService {
             url: '/api/v1/items/{id}',
             path: {
                 id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class JobsService {
+    /**
+     * List Jobs
+     * @returns JobPublic Successful Response
+     * @throws ApiError
+     */
+    public static listJobs(): CancelablePromise<JobsListJobsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/jobs/'
+        });
+    }
+    
+    /**
+     * Discover New Jobs
+     * @returns JobPublic Successful Response
+     * @throws ApiError
+     */
+    public static discoverNewJobs(): CancelablePromise<JobsDiscoverNewJobsResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/jobs/discover'
+        });
+    }
+    
+    /**
+     * Get Matched Jobs
+     * @returns JobMatchPublic Successful Response
+     * @throws ApiError
+     */
+    public static getMatchedJobs(): CancelablePromise<JobsGetMatchedJobsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/jobs/match'
+        });
+    }
+    
+    /**
+     * Get Job
+     * @param data The data for the request.
+     * @param data.jobId
+     * @returns JobPublic Successful Response
+     * @throws ApiError
+     */
+    public static getJob(data: JobsGetJobData): CancelablePromise<JobsGetJobResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/jobs/{job_id}',
+            path: {
+                job_id: data.jobId
             },
             errors: {
                 422: 'Validation Error'
@@ -228,6 +422,144 @@ export class PrivateService {
             url: '/api/v1/private/users/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ProfileService {
+    /**
+     * Get My Profile
+     * @returns ProfilePublic Successful Response
+     * @throws ApiError
+     */
+    public static getMyProfile(): CancelablePromise<ProfileGetMyProfileResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/profile/me'
+        });
+    }
+    
+    /**
+     * Update My Profile
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns ProfilePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateMyProfile(data: ProfileUpdateMyProfileData): CancelablePromise<ProfileUpdateMyProfileResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/profile/me',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class QuestionsService {
+    /**
+     * List Questions
+     * @returns QuestionMemoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static listQuestions(): CancelablePromise<QuestionsListQuestionsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/questions/'
+        });
+    }
+    
+    /**
+     * Save Question Answer
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns QuestionMemoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static saveQuestionAnswer(data: QuestionsSaveQuestionAnswerData): CancelablePromise<QuestionsSaveQuestionAnswerResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/questions/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Match Question
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns QuestionMatchResponse Successful Response
+     * @throws ApiError
+     */
+    public static matchQuestion(data: QuestionsMatchQuestionData): CancelablePromise<QuestionsMatchQuestionResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/questions/match',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ResumesService {
+    /**
+     * Upload Resume
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns ResumePublic Successful Response
+     * @throws ApiError
+     */
+    public static uploadResume(data: ResumesUploadResumeData): CancelablePromise<ResumesUploadResumeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/resumes/upload',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * List Resumes
+     * @returns ResumePublic Successful Response
+     * @throws ApiError
+     */
+    public static listResumes(): CancelablePromise<ResumesListResumesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/resumes/'
+        });
+    }
+    
+    /**
+     * Get Resume
+     * @param data The data for the request.
+     * @param data.resumeId
+     * @returns ResumePublic Successful Response
+     * @throws ApiError
+     */
+    public static getResume(data: ResumesGetResumeData): CancelablePromise<ResumesGetResumeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/resumes/{resume_id}',
+            path: {
+                resume_id: data.resumeId
+            },
             errors: {
                 422: 'Validation Error'
             }

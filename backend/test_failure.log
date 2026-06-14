@@ -1,0 +1,202 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-7.4.4, pluggy-1.6.0 -- /home/sudarshan/projects/job-applier/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/sudarshan/projects/job-applier/backend
+plugins: anyio-4.12.1
+collecting ... collected 4 items / 3 deselected / 1 selected
+
+tests/services/test_automation.py::test_application_orchestrator_workflow[asyncio] FAILED [100%]
+
+=================================== FAILURES ===================================
+_______________ test_application_orchestrator_workflow[asyncio] ________________
+
+db = <sqlmodel.orm.session.Session object at 0x7ac3cb250790>
+
+    @pytest.mark.anyio
+    async def test_application_orchestrator_workflow(db: Session) -> None:
+        user = create_random_user(db)
+    
+        # 1. Discover jobs to have one in DB
+        jobs = job_discovery.discover_jobs(db)
+        job = jobs[0]
+    
+        # 2. Create draft application
+        app = application_service.create_application(db, user.id, job.id)
+        assert app.status == "DRAFT"
+    
+        # 3. Start application orchestration (which extracts and resolves fields)
+        updated_app = await application_orchestrator.start_application(db, user.id, app.id)
+    
+        # Since the user profile might be empty, some required fields will be unresolved,
+        # putting the application into WAITING_FOR_USER status
+        assert updated_app.status in ["WAITING_FOR_USER", "READY_TO_SUBMIT"]
+    
+        fields = application_service.get_fields(db, app.id)
+        assert len(fields) > 0
+    
+        # 4. Save answers to resolve outstanding fields
+        unresolved = [f for f in fields if not f.resolved]
+        answers_list = []
+        for f in unresolved:
+            f.value = "Test Answer"
+            f.resolved = True
+            db.add(f)
+        db.commit()
+    
+        # Re-evaluate
+        resolved_app = await application_orchestrator.resolve_fields(db, user.id, app.id)
+        assert resolved_app.status == "READY_TO_SUBMIT"
+    
+        # 5. Submit application
+>       final_app = await application_orchestrator.submit_application(db, user.id, app.id)
+
+tests/services/test_automation.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/application_orchestrator.py:140: in submit_application
+    fields_list = [
+app/services/application_orchestrator.py:143: in <listcomp>
+    "selector": f.selector or f"[name='{f.normalized_key}']",
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ApplicationField(field_name='Resume', field_type='file', value='Test Answer', resolved=True, id=UUID('3e7d1e5e-9f73-4f...'), normalized_key='resume', application_id=UUID('562deb11-d728-46eb-8b66-f4e7dfb21742'), options=[], is_required=True)
+item = 'selector'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra and item in pydantic_extra:
+                return pydantic_extra[item]
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'ApplicationField' object has no attribute 'selector'
+
+../.venv/lib/python3.11/site-packages/pydantic/main.py:1026: AttributeError
+----------------------------- Captured stderr call -----------------------------
+ERROR:app.services.browser.base_driver:Failed to launch Playwright browser: BrowserType.launch: Executable doesn't exist at /home/sudarshan/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+ERROR:app.services.browser.application_runner:Error extracting fields from URL https://boards.greenhouse.io/fastapisolutions/jobs/101: BrowserType.launch: Executable doesn't exist at /home/sudarshan/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝. Falling back to mock fields.
+ERROR:app.services.vector.qdrant_service:Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR:app.services.vector.qdrant_service:Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR:app.services.vector.qdrant_service:Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR:app.services.vector.qdrant_service:Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR:app.services.vector.qdrant_service:Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+------------------------------ Captured log call -------------------------------
+ERROR    app.services.browser.base_driver:base_driver.py:21 Failed to launch Playwright browser: BrowserType.launch: Executable doesn't exist at /home/sudarshan/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+ERROR    app.services.browser.application_runner:application_runner.py:36 Error extracting fields from URL https://boards.greenhouse.io/fastapisolutions/jobs/101: BrowserType.launch: Executable doesn't exist at /home/sudarshan/.cache/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-linux64/chrome-headless-shell
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝. Falling back to mock fields.
+ERROR    app.services.vector.qdrant_service:qdrant_service.py:101 Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR    app.services.vector.qdrant_service:qdrant_service.py:101 Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR    app.services.vector.qdrant_service:qdrant_service.py:101 Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR    app.services.vector.qdrant_service:qdrant_service.py:101 Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+ERROR    app.services.vector.qdrant_service:qdrant_service.py:101 Qdrant search error in questions: 'QdrantClient' object has no attribute 'search'. Falling back to mock matching.
+=============================== warnings summary ===============================
+app/core/config.py:108
+  /home/sudarshan/projects/job-applier/backend/app/core/config.py:108: UserWarning: The value of SECRET_KEY is "changethis", for security, please change it, at least for deployments.
+    warnings.warn(message, stacklevel=1)
+
+app/core/config.py:108
+  /home/sudarshan/projects/job-applier/backend/app/core/config.py:108: UserWarning: The value of POSTGRES_PASSWORD is "changethis", for security, please change it, at least for deployments.
+    warnings.warn(message, stacklevel=1)
+
+app/core/config.py:108
+  /home/sudarshan/projects/job-applier/backend/app/core/config.py:108: UserWarning: The value of FIRST_SUPERUSER_PASSWORD is "changethis", for security, please change it, at least for deployments.
+    warnings.warn(message, stacklevel=1)
+
+app/schemas/profile.py:20
+  /home/sudarshan/projects/job-applier/backend/app/schemas/profile.py:20: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ProfilePublic(ProfileBase):
+
+app/services/ai/llm_service.py:11
+  /home/sudarshan/projects/job-applier/backend/app/services/ai/llm_service.py:11: FutureWarning: 
+  
+  All support for the `google.generativeai` package has ended. It will no longer be receiving 
+  updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+  See README for more details:
+  
+  https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+  
+    import google.generativeai as genai
+
+app/api/routes/resume.py:14
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/resume.py:14: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ResumePublic(BaseModel):
+
+app/api/routes/question_memory.py:13
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/question_memory.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class QuestionMemoryPublic(BaseModel):
+
+app/api/routes/jobs.py:14
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/jobs.py:14: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobPublic(BaseModel):
+
+app/api/routes/applications.py:14
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/applications.py:14: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ApplicationFieldPublic(BaseModel):
+
+app/api/routes/applications.py:27
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/applications.py:27: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ApplicationEventPublic(BaseModel):
+
+app/api/routes/applications.py:36
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/applications.py:36: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class JobShortPublic(BaseModel):
+
+app/api/routes/applications.py:45
+  /home/sudarshan/projects/job-applier/backend/app/api/routes/applications.py:45: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ApplicationPublic(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/services/test_automation.py::test_application_orchestrator_workflow[asyncio]
+================= 1 failed, 3 deselected, 12 warnings in 1.02s =================

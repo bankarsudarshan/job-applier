@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
 
+    QDRANT_HOST: str = "localhost"
+    QDRANT_PORT: int = 6333
+    GEMINI_API_KEY: str | None = None
+
     @computed_field  # type: ignore[prop-decorator]
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
